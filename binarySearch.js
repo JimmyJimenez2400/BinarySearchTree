@@ -21,7 +21,6 @@ class Tree {
 
     let mid = Math.floor((start + end)/2);
 
-    console.log(mid);
     let rootValue = new Node(array[mid]);
 
 
@@ -37,14 +36,65 @@ class Tree {
   insert(value){
     // value is X, the node to be inserted
     //we need to compare the root to X, if root < X, go left, else go right
+    let newNode = new Node(value);
 
-    let root = this.root;
+    if(this.root === null){
+      this.root = newNode;
 
-    console.log(root);
+      return this.root;
+    }
 
+    let currentNode = this.root;
+
+    console.log('Insert, current Node:')
+    console.log(currentNode);
+
+    while(currentNode){
+      console.log(currentNode);
+
+      if(value < currentNode.value){
+        console.log('VALUE IS LOWER THAN CURRENTNODE');
+        if(currentNode.left === null){
+          currentNode.left = newNode;
+          break;
+        }else{
+          currentNode = currentNode.left;
+        }
+      }else if(value > currentNode.value){
+        console.log('VALUE IS HIGHER THAN CURRENTNODE');
+        if(currentNode.right === null){
+          currentNode.right = newNode;
+        }else{
+          currentNode = currentNode.right;
+        }
+      }else{
+        break;
+      }
+
+
+      
+    }
+
+    return this.root;
+    
   }
 
   deleteItem(value){
+    let currentNode = this.root;
+    let parentNode;
+
+    while(currentNode){
+      parentNode = currentNode;
+
+      //case 1: delete leaf node, which won't have an impact on the BST
+
+      //How?
+      if(currentNode.value === value){
+        
+      }
+
+    }
+
 
   }
 }
@@ -88,18 +138,18 @@ function merge_sort(array){
   }
 }
 
-let not_sorted = [4, 3,2,1, ];
+let not_sorted = [4,3,2,1,];
 
 let sorted = merge_sort(not_sorted);
 
-let test1 = new Tree(sorted);
-
-console.log("Logging Tree...");
-console.log(test1.root.right.right);
+let test1 = new Tree();
 
 
-console.log("\n SPACE\n");
+test1.insert(10);
+test1.insert(8);
+test1.insert(11);
 
+console.log(test1);
 
 function prettyPrint(node, prefix = "", isLeft = true){
   if (node === null) {
@@ -115,3 +165,4 @@ function prettyPrint(node, prefix = "", isLeft = true){
 };
 
 prettyPrint(test1.root)
+
