@@ -46,14 +46,9 @@ class Tree {
 
     let currentNode = this.root;
 
-    console.log('Insert, current Node:')
-    console.log(currentNode);
-
     while(currentNode){
-      console.log(currentNode);
 
       if(value < currentNode.value){
-        console.log('VALUE IS LOWER THAN CURRENTNODE');
         if(currentNode.left === null){
           currentNode.left = newNode;
           break;
@@ -61,7 +56,6 @@ class Tree {
           currentNode = currentNode.left;
         }
       }else if(value > currentNode.value){
-        console.log('VALUE IS HIGHER THAN CURRENTNODE');
         if(currentNode.right === null){
           currentNode.right = newNode;
         }else{
@@ -81,22 +75,51 @@ class Tree {
 
   deleteItem(value){
     let currentNode = this.root;
-    let parentNode;
+    let parentNode = null;
+
 
     while(currentNode){
-      parentNode = currentNode;
+      if(value < currentNode.value){
+        parentNode = currentNode;
+        currentNode = currentNode.left;
+      }else if(value > currentNode.value){
+        parentNode = currentNode;
+        currentNode = currentNode.right;
+      }else if(value === currentNode.value){
+        //base case 1
+        if(currentNode.left === null && currentNode.right === null){
+          if(parentNode.left.value === value){
+            parentNode.left = null;
+          }else if(parentNode.right.value === value){
+            parentNode.right = null;
+          }else{
+            return this.root;
+          }
+          
+        }
+        else if((currentNode.left === null && currentNode.right !== null) || (currentNode.right === null && currentNode.left !== null)){
+          if(currentNode.left !== null && currentNode.right === null){
+            console.log("_________________ LEFT NOT NULL");
+            parentNode.left = currentNode.left;
+            currentNode = parentNode.left;
+   
 
-      //case 1: delete leaf node, which won't have an impact on the BST
-
-      //How?
-      if(currentNode.value === value){
-        
+          }else if(currentNode.right !== null && currentNode.left === null){
+            console.log("__________________ RIGHT NOT NULL");
+            parentNode.right = currentNode.right;
+            currentNode = parentNode.right;
+          }
+        }else{
+          return this.root;
+        }
+        break;
       }
-
     }
 
+    return currentNode;
 
   }
+
 }
 //we need a sort method which include to remove duplicates of an array
 
@@ -146,10 +169,13 @@ let test1 = new Tree();
 
 
 test1.insert(10);
-test1.insert(8);
-test1.insert(11);
+test1.insert(5);
+test1.insert(2);
+test1.insert(3);
+test1.insert(1);
+test1.insert(20);
 
-console.log(test1);
+
 
 function prettyPrint(node, prefix = "", isLeft = true){
   if (node === null) {
@@ -164,5 +190,13 @@ function prettyPrint(node, prefix = "", isLeft = true){
   }
 };
 
-prettyPrint(test1.root)
 
+
+test1.insert(14);
+test1.insert(11);
+
+prettyPrint(test1.root);
+
+test1.deleteItem(14);
+
+prettyPrint(test1.root);
