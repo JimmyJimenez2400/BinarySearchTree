@@ -50,6 +50,38 @@ class Tree {
 
     return currentNode;
   }
+
+  deleteItem(value){
+
+  }
+
+  find(value, currentNode){
+    // function that returns the node with the given value
+    // Base case, if value === currentNode.value, return currentNode
+
+    let foundNode;
+
+
+    if(currentNode !== null && value === currentNode.value){
+      foundNode = currentNode;
+      return foundNode;
+    }else if(currentNode === null){
+      console.log('Node cannout be found');
+      return false;
+    }
+
+    
+
+    if(value < currentNode.value){
+      currentNode.left = this.find(value, currentNode.left)
+    }else if(value > currentNode.value){
+      currentNode.right = this.find(value, currentNode.right)
+    }
+
+    return currentNode;
+    
+
+  }
 }
 
 function merge_sort(array) {
@@ -95,7 +127,7 @@ function merge_sort(array) {
 
 let test1 = new Tree();
 
-let returnNode = test1.buildTree([4]);
+let returnNode = test1.buildTree([1,2,3,4,5,7]);
 
 
 function prettyPrint(node, prefix = '', isLeft = true) {
@@ -117,3 +149,5 @@ test1.insert(6, returnNode);
 
 
 prettyPrint(returnNode);
+
+test1.find(3, returnNode);
