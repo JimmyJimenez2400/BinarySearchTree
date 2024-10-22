@@ -8,7 +8,14 @@ class Node {
 
 class Tree {
   constructor(array = []) {
-    this.root = this.buildTree(array);
+
+    if(array.length > 0){
+      this.root = this.buildTree(array);
+      console.log('Tree initialized with root:', this.root);  // Add logging
+    }else{
+      this.root = null;
+      console.log('Empty tree')
+    }
   }
 
   buildTree(array, start = 0, end = array.length - 1) {
@@ -28,31 +35,74 @@ class Tree {
     return rootValue;
   }
 
-  insert(value, currentNode){
-    // base case: the obvious result is that if the the current node value is null, we assign that current node value the newNode
-    // Otherwise: if the value is less than the node.value, we'll keep going down the left subtree, else if the value is greater than the node.value, we'll keep going down the right subtree
 
-    if(currentNode === null){
-      // If the node 'this.value' is null, we can attach the new node, else we keep going down depending on the condition
+  insert(value){
+    if(this.root === null){
       return new Node(value);
     }
 
-    if(currentNode === value){
+    let updatedTree = this.insertRecursionHelper(this.root, value);
+    
+    return updatedTree;
+  }
+
+  insertRecursionHelper(currentNode, value){
+    if(currentNode === null){
+      return new Node(value);
+    }
+
+    if(currentNode.value === value){
       return currentNode;
     }
 
     if(value < currentNode.value){
-      currentNode.left = this.insert(value, currentNode.left);
-    }
-    else if(value > currentNode.value){
-      currentNode.right = this.insert(value,currentNode.right);
+      currentNode.left = this.insertRecursionHelper(currentNode.left, value);
+    }else if(value > currentNode.value){
+      currentNode.right = this.insertRecursionHelper(currentNode.right, value);
     }
 
     return currentNode;
   }
+  
 
-  deleteItem(value){
+  getSuccessor(currentNode){
+    currentNode = currentNode.right;
+    while(currentNode !== null && currentNode.left !== null){
+      currentNode = currentNode.left;
+    }
+    return currentNode;
+  }
 
+  deleteItem(value, root){
+
+    if(root === null){
+      return root;
+    }
+
+    if(value < root.value){
+      root.left = this.deleteItem(value, root.left)
+      console.log('Root.left:');
+      console.log(root.left);
+    }else if(value > root.value){
+      root.right = this.deleteItem(value, root.right);
+      console.log('Root.right');
+      console.log(root.right);
+    }else{
+      //case 1 - no children or only right child
+      if(root.left === null){
+        return root.right;
+      }
+      //case 2 - only left child
+      if(root.right === null){
+        return root.left;
+      }
+      
+      //case 3 - both children present
+      let successor = this.getSuccessor(root);
+      root.value = successor.value;
+      root.right = this.deleteItem(successor.value, root.right);
+    }
+    return root;
   }
 
   find(value, currentNode){
@@ -80,6 +130,26 @@ class Tree {
 
     return currentNode;
     
+
+  }
+
+  levelOrder(){
+    let result = [];
+    let root;
+
+    if(callback === undefined){
+      throw new Error("Callback function is required");
+    }
+
+    if(root === null){
+      return arrQueue; 
+    }
+
+    while(arrQueue !== null){
+      arrQueue.push(node);
+    }
+
+    console.log(root);
 
   }
 }
@@ -125,9 +195,7 @@ function merge_sort(array) {
 
 // let sorted = merge_sort(not_sorted);
 
-let test1 = new Tree();
-
-let returnNode = test1.buildTree([1,2,3,4,5,7]);
+let test1 = new Tree([1,2,3,4,5,7]);
 
 
 function prettyPrint(node, prefix = '', isLeft = true) {
@@ -143,11 +211,31 @@ function prettyPrint(node, prefix = '', isLeft = true) {
   }
 }
 
-prettyPrint(returnNode);
 
-test1.insert(6, returnNode);
+console.log("BEFORE INSERT:");
+prettyPrint(test1.root);
 
 
-prettyPrint(returnNode);
+test1.insert(6);
 
-test1.find(3, returnNode);
+
+console.log("AFTER INSERT:");
+prettyPrint(test1.root);
+
+test1.insert(5000);
+
+
+console.log("AFTER INSERT:");
+prettyPrint(test1.root);
+
+
+// console.log(`Before Removal:`);
+
+// test1.deleteItem(5, returnNode);
+
+// console.log('After Removal:');
+// prettyPrint(returnNode);
+
+// test1.deleteItem(6, returnNode);
+
+// prettyPrint(returnNode);
