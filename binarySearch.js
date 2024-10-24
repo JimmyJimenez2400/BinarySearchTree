@@ -98,38 +98,6 @@ class Tree {
     }
     return currentNode;
   }
-  
-  // deleteItem(value, root){
-
-  //   if(root === null){
-  //     return root;
-  //   }
-
-  //   if(value < root.value){
-  //     root.left = this.deleteItem(value, root.left)
-  //     console.log('Root.left:');
-  //     console.log(root.left);
-  //   }else if(value > root.value){
-  //     root.right = this.deleteItem(value, root.right);
-  //     console.log('Root.right');
-  //     console.log(root.right);
-  //   }else{
-  //     //case 1 - no children or only right child
-  //     if(root.left === null){
-  //       return root.right;
-  //     }
-  //     //case 2 - only left child
-  //     if(root.right === null){
-  //       return root.left;
-  //     }
-      
-  //     //case 3 - both children present
-  //     let successor = this.getSuccessor(root);
-  //     root.value = successor.value;
-  //     root.right = this.deleteItem(successor.value, root.right);
-  //   }
-  //   return root;
-  // }
 
   getSuccessor(currentNode){
     currentNode = currentNode.right;
@@ -140,32 +108,30 @@ class Tree {
   }
 
 
-  find(value, currentNode){
+  find(value){
     // function that returns the node with the given value
     // Base case, if value === currentNode.value, return currentNode
-
-    let foundNode;
-
-
-    if(currentNode !== null && value === currentNode.value){
-      foundNode = currentNode;
-      return foundNode;
-    }else if(currentNode === null){
-      console.log('Node cannout be found');
-      return false;
+    if(this.root === null){
+      return null;
     }
 
-    
+    return this.findRecursionHelper(value, this.root);
+      
+  }
 
-    if(value < currentNode.value){
-      currentNode.left = this.find(value, currentNode.left)
-    }else if(value > currentNode.value){
-      currentNode.right = this.find(value, currentNode.right)
+  findRecursionHelper(value, node){
+    if(node.value === value){
+      console.log(node);
+      return node;
     }
 
-    return currentNode;
-    
+    if(value < node.value){
+      node = this.findRecursionHelper(value, node.left);
+    }else if(value > node.value){
+      node = this.findRecursionHelper(value, node.right);
+    }
 
+    return node;
   }
 
   levelOrder(){
@@ -276,16 +242,4 @@ test1.deleteItem(5);
 
 prettyPrint(test1.root);
 
-
-
-
-// console.log(`Before Removal:`);
-
-// test1.deleteItem(5, returnNode);
-
-// console.log('After Removal:');
-// prettyPrint(returnNode);
-
-// test1.deleteItem(6, returnNode);
-
-// prettyPrint(returnNode);
+test1.find(4);
