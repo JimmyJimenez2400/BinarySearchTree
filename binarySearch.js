@@ -64,6 +64,72 @@ class Tree {
     return currentNode;
   }
   
+  deleteItem(value){
+    if(this.root === null){
+      return this.root;
+    }
+
+    return this.deleteItemRecursionHelper(this.root, value);
+  }
+
+  deleteItemRecursionHelper(currentNode, value){
+    if(currentNode === null){
+      return currentNode;
+    }
+
+    if(value < currentNode.value){
+      currentNode.left = this.deleteItemRecursionHelper(currentNode.left, value);
+    }else if(value > currentNode.value){
+      currentNode.right = this.deleteItemRecursionHelper(currentNode.right, value);
+    }else{
+      //case 1 - no children or only right child
+      if(currentNode.left === null){
+        return currentNode.right;
+      }
+      //case 2 - only left child
+      if(currentNode.right === null){
+        return currentNode.left;
+      }
+      
+      //case 3 - both children present
+      let successor = this.getSuccessor(currentNode);
+      currentNode.value = successor.value;
+      currentNode.right = this.deleteItemRecursionHelper(currentNode.right, successor.value);
+    }
+    return currentNode;
+  }
+  
+  // deleteItem(value, root){
+
+  //   if(root === null){
+  //     return root;
+  //   }
+
+  //   if(value < root.value){
+  //     root.left = this.deleteItem(value, root.left)
+  //     console.log('Root.left:');
+  //     console.log(root.left);
+  //   }else if(value > root.value){
+  //     root.right = this.deleteItem(value, root.right);
+  //     console.log('Root.right');
+  //     console.log(root.right);
+  //   }else{
+  //     //case 1 - no children or only right child
+  //     if(root.left === null){
+  //       return root.right;
+  //     }
+  //     //case 2 - only left child
+  //     if(root.right === null){
+  //       return root.left;
+  //     }
+      
+  //     //case 3 - both children present
+  //     let successor = this.getSuccessor(root);
+  //     root.value = successor.value;
+  //     root.right = this.deleteItem(successor.value, root.right);
+  //   }
+  //   return root;
+  // }
 
   getSuccessor(currentNode){
     currentNode = currentNode.right;
@@ -73,37 +139,6 @@ class Tree {
     return currentNode;
   }
 
-  deleteItem(value, root){
-
-    if(root === null){
-      return root;
-    }
-
-    if(value < root.value){
-      root.left = this.deleteItem(value, root.left)
-      console.log('Root.left:');
-      console.log(root.left);
-    }else if(value > root.value){
-      root.right = this.deleteItem(value, root.right);
-      console.log('Root.right');
-      console.log(root.right);
-    }else{
-      //case 1 - no children or only right child
-      if(root.left === null){
-        return root.right;
-      }
-      //case 2 - only left child
-      if(root.right === null){
-        return root.left;
-      }
-      
-      //case 3 - both children present
-      let successor = this.getSuccessor(root);
-      root.value = successor.value;
-      root.right = this.deleteItem(successor.value, root.right);
-    }
-    return root;
-  }
 
   find(value, currentNode){
     // function that returns the node with the given value
@@ -227,6 +262,21 @@ test1.insert(5000);
 
 console.log("AFTER INSERT:");
 prettyPrint(test1.root);
+
+
+test1.deleteItem(6);
+
+prettyPrint(test1.root);
+
+test1.deleteItem(2);
+
+prettyPrint(test1.root);
+
+test1.deleteItem(5);
+
+prettyPrint(test1.root);
+
+
 
 
 // console.log(`Before Removal:`);
