@@ -134,29 +134,191 @@ class Tree {
     return node;
   }
 
-  levelOrder(){
-    let result = [];
-    let root;
+  levelOrder(callback){
+
+    // base case
+    if(this.root === null){
+      return [];
+    }
 
     if(callback === undefined){
-      throw new Error("Callback function is required");
+      throw new Error("Callback must be provided");
     }
 
-    if(root === null){
-      return arrQueue; 
+    // breadth-first level levelOrder
+    //When visiting a node, we can add the node to the "Queue"
+    let queue = [];
+    queue.push(this.root);
+
+
+    while(queue.length > 0){
+      let current = queue.shift();
+      console.log(current.value);
+      callback(current);
+
+      if(current.left !== null){
+        console.log("Pushing to queue (left): ");
+        console.log(current.left.value);
+        queue.push(current.left);
+      }
+      if(current.right !== null){
+        console.log("Pushing to queue (right): ");
+        console.log(current.right.value);
+        queue.push(current.right);
+      }
+
+      console.log(queue);
+    }
+  }
+
+  inOrder(callback){
+    if(!this.root){
+      return [];
     }
 
-    while(arrQueue !== null){
-      arrQueue.push(node);
+    if(!callback){
+      throw new Error("Please provide a callback");
     }
 
-    console.log(root);
+
+    let stack = [];
+    let currentNode = this.root;
+
+    let result = [];
+
+   while(currentNode !== null || stack.length > 0){
+
+    // visits left subtree until currentNode is null
+    while(currentNode !== null){
+      stack.push(currentNode);
+      currentNode = currentNode.left;
+    }
+
+    //we pop to visit the last node in our stack array to visit it's value
+    currentNode = stack.pop();
+    result.push(currentNode.value);
+    callback(currentNode);
+
+    currentNode = currentNode.right;
+   }
+
+   return result;
+  }
+
+  preOrder(callback){
+
+    if(!this.root){
+      return [];
+    }
+
+    if(!callback){
+      throw new Error("Callback must be provided");
+    }
+
+    let stack = [this.root];
+    // push node.values
+    let result = [];
+
+
+    while(stack.length > 0){
+      const node = stack.shift();
+
+      // visit the Node
+      result.push(node.value)
+      callback(node);
+      // visit the left subtree
+      if(node.left !== null){
+        stack.push(node.left);
+      }
+      // visit the right subtree
+      if(node.right !== null){
+        stack.push(node.right);
+      }
+    }
+
+    return result;
+  }
+
+  postOrders(callback){
+
+    let result = [];
+
+    if(!this.root){
+      return result;
+    }
+
+    this.postOrderRecursive(callback, this.root, result);
+  }
+
+  postOrderRecursive(callback, node, result =[]){
+    if(!node) {
+      return; // Base case to stop recursion
+    }
+
+    this.postOrderRecursive(callback, node.left, result);
+    this.postOrderRecursive(callback, node.right, result);
+
+    result.push(node.value);
+
+    if(callback) callback(result);
+
+    return result;
+  }
+
+
+  postOrder(callback){
+    if(!this.root){
+      return [];
+    }
+
+    let stack = [];
+    let result = [];
+    let currentNode = this.root;
+    let lastVisited = null;
+
+    while(currentNode !== null || stack.length > 0){
+      if(currentNode !== null){
+        stack.push(currentNode);
+        currentNode = currentNode.left;
+      }else{
+        let peekNode = stack[stack.length - 1];
+
+        if(peekNode.right !== null && lastVisited !== peekNode.right){
+          currentNode = peekNode.right;
+        }else{
+          stack.pop();
+          result.push(peekNode.right);
+
+          lastVisited = peekNode;
+        }
+      }
+
+    }
+    
 
   }
+
+  height(node){
+
+  }
+
+  depth(node){
+
+  }
+
+  isBalanced(node){
+
+  }
+
+  rebalance(node){
+
+  }
+
+
 }
 
 function merge_sort(array) {
-  if (array.length === 1) {
+  if (array.length <= 1) {
     return array;
   } else {
     let result = [];
@@ -169,14 +331,12 @@ function merge_sort(array) {
     let k = 0;
 
     while (i < leftHalf.length && j < rightHalf.length) {
-      if (leftHalf[i] === rightHalf[j]) {
-      }
       if (leftHalf[i] < rightHalf[j]) {
-        result[k++] = leftHalf[0];
-        i++;
+        result[k++] = leftHalf[i++];
+        
       } else {
-        result[k++] = rightHalf[j];
-        j++;
+        result[k++] = rightHalf[j++];
+    
       }
     }
 
@@ -192,11 +352,12 @@ function merge_sort(array) {
   }
 }
 
-// let not_sorted = [4, 3, 2, 1];
 
-// let sorted = merge_sort(not_sorted);
+let sorted = merge_sort([1,5,2,3,6]);
+console.log("Sorting...");
+console.log(sorted);
 
-let test1 = new Tree([1,2,3,4,5,7]);
+let test1 = new Tree([1,2,3,4,5,6,7,8,9,10,11]);
 
 
 function prettyPrint(node, prefix = '', isLeft = true) {
@@ -212,34 +373,12 @@ function prettyPrint(node, prefix = '', isLeft = true) {
   }
 }
 
-
-console.log("BEFORE INSERT:");
 prettyPrint(test1.root);
+function displayData(data){
+  console.log("Displaying data:");
+  console.log(data);
+}
 
-
-test1.insert(6);
-
-
-console.log("AFTER INSERT:");
-prettyPrint(test1.root);
-
-test1.insert(5000);
-
-
-console.log("AFTER INSERT:");
-prettyPrint(test1.root);
-
-
-test1.deleteItem(6);
-
-prettyPrint(test1.root);
-
-test1.deleteItem(2);
-
-prettyPrint(test1.root);
-
-test1.deleteItem(5);
-
-prettyPrint(test1.root);
-
-test1.find(4);
+// test1.inOrder(displayData);
+// test1.preOrder(displayData);
+test1.postOrders();
